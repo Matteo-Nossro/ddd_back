@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'rest_framework',
     "apps.musique",
-    "apps.bienetre"
+    "apps.bienetre",
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 REST_FRAMEWORK = {
@@ -58,6 +60,8 @@ REST_FRAMEWORK = {
 }
 
 ROOT_URLCONF = "ddd.urls"
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 TEMPLATES = [
     {
