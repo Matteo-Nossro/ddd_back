@@ -3,3 +3,6 @@ Django==5.2
 djangorestframework==3.16.0
 sqlparse==0.5.3
 tqdm==4.67.1
+
+openpyxl~=3.1.5
+pycountry~=24.6.1
