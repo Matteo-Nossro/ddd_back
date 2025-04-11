@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     "apps.musique",
     "apps.bienetre",
+    "apps.analyse",
     'corsheaders',
 ]
 
