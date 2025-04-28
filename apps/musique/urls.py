@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import MusicTrackByCountryListView, TopTracksByCountryAndDateView
+from .views import MusicTrackByCountryListView, TopTracksByCountryAndDateView, SimilarTracksView
 
 urlpatterns = [
     # Endpoint pour obtenir les pistes d'un pays (le paramètre country_code)
