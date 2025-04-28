@@ -15,4 +15,4 @@ class StatsByCountryView(generics.ListAPIView):
         country_code = self.kwargs.get('country')
         # Filtrer de manière insensible à la casse
         queryset = MergedDataRecord.objects.filter(country__iexact=country_code)
-        return queryset.order_by('ladder_score')  # Exemple d'ordre, vous pouvez changer
+        return queryset.order_by('ladder_score')
