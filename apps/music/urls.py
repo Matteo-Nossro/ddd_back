@@ -8,7 +8,9 @@ urlpatterns = [
          TopTracksByCountryAndDateView.as_view(),
          name='top-tracks-by-country-date'),
     path(
-        'tracks/similar/<str:country_code>/<str:snapshot_date>/<str:spotify_id>/',
+        'tracks/similar/'
+        '<str:base_country>/<str:base_date>/<str:spotify_id>/'
+        '<str:target_country>/<str:target_date>/',
         SimilarTracksView.as_view(),
         name='similar-tracks'
     ),

@@ -2,7 +2,7 @@ import csv
 import os
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from apps.bienetre.models import MentalHealthRecord
+from apps.wellbeing.models import MentalHealthRecord
 import pycountry
 
 def get_country_iso(country_name):

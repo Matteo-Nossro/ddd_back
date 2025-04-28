@@ -21,9 +21,9 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('api/musique/', include('apps.musique.urls')),
-    path('api/bienetre/', include('apps.bienetre.urls')),
-    path('api/analyse/', include('apps.analyse.urls')),
+    path('api/music/', include('apps.music.urls')),
+    path('api/wellbeing/', include('apps.wellbeing.urls')),
+    path('api/analytics/', include('apps.analytics.urls')),
     # Endpoints pour accounts (inscription)
     path('api/accounts/', include('apps.accounts.urls')),
 ]

@@ -39,9 +39,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'rest_framework',
     'rest_framework_simplejwt',
-    "apps.musique",
-    "apps.bienetre",
-    "apps.analyse",
+    "apps.music",
+    "apps.wellbeing",
+    "apps.analytics",
     'apps.accounts',
     'corsheaders',
 ]

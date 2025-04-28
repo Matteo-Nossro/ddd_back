@@ -2,7 +2,7 @@ import os
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from openpyxl import load_workbook
-from apps.bienetre.models import HappinessRecord
+from apps.wellbeing.models import HappinessRecord
 import pycountry
 
 def get_country_iso(country_name):

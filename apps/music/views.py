@@ -1,6 +1,9 @@
+import math
 from datetime import datetime
 
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.response import Response
+
 from .models import MusicTrack
 from .pagination import TopTracksPagination
 from .serializers import MusicTrackSerializer
@@ -48,80 +51,72 @@ class TopTracksByCountryAndDateView(generics.ListAPIView):
         queryset = queryset.order_by('daily_rank')
         return queryset
 
-from datetime import datetime
-import math
-
-from rest_framework import generics, status
-from rest_framework.response import Response
-
-from .models import MusicTrack
-from .serializers import MusicTrackSerializer
-
 class SimilarTracksView(generics.GenericAPIView):
     """
-    Renvoie jusqu'à 5 pistes les plus similaires à une piste de référence
-    (mêmes pays et date), en excluant la piste elle-même.
-    La similarité est calculée sur les audio features via une distance Euclidienne.
+    Renvoie jusqu'à 5 pistes les plus similaires :
+      - Référence : (base_country, base_date, spotify_id)
+      - Cibles   : (target_country, target_date)
+    Similarité : distance Euclidienne sur les audio features.
     """
     serializer_class = MusicTrackSerializer
 
-    def get(self, request, country_code, snapshot_date, spotify_id, *args, **kwargs):
-        # 1. parser la date
+    def get(self, request,
+            base_country, base_date, spotify_id,
+            target_country, target_date,
+            *args, **kwargs):
+
+        # 1) Parser les dates
         try:
-            date = datetime.strptime(snapshot_date, '%Y-%m-%d').date()
+            d_base   = datetime.strptime(base_date, '%Y-%m-%d').date()
+            d_target = datetime.strptime(target_date, '%Y-%m-%d').date()
         except ValueError:
             return Response(
                 {"detail": "Format de date invalide, attendu YYYY-MM-DD."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # 2. récupérer la piste de référence
+        # 2) Charger la piste de référence
         try:
             base = MusicTrack.objects.get(
-                country__name__iexact=country_code,
-                snapshot_date=date,
+                country__name__iexact=base_country,    # ← ici
+                snapshot_date=d_base,
                 spotify_id=spotify_id
             )
         except MusicTrack.DoesNotExist:
             return Response(
-                {"detail": "Piste non trouvée pour ce pays/date/spotify_id."},
+                {"detail": "Piste de référence introuvable."},
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        # 3. définir les champs à comparer
+        # 3) Charger les candidates sur target_country/target_date
+        candidates = MusicTrack.objects.filter(
+            country__name__iexact=target_country,    # ← et ici
+            snapshot_date=d_target
+        ).exclude(pk=base.pk)
+
+        # 4) Liste des audio features
         feature_fields = [
             'danceability', 'energy', 'key', 'loudness', 'mode',
             'speechiness', 'acousticness', 'instrumentalness',
             'liveness', 'valence', 'tempo'
         ]
 
-        # 4. charger les candidates (même pays et date), exclure la base
-        candidates = MusicTrack.objects.filter(
-            country__name__iexact=country_code,
-            snapshot_date=date
-        ).exclude(pk=base.pk)
+        # Valeurs de la piste de référence (0.0 si None)
+        base_feats = { f: getattr(base, f) or 0.0 for f in feature_fields }
 
-        # 5. extraire les valeurs de la piste de base
-        base_feats = {
-            f: getattr(base, f) or 0.0
-            for f in feature_fields
-        }
-
-        # 6. calculer la distance Euclidienne pour chaque candidate
+        # 5) Calcul de la distance pour chaque candidate
         scored = []
         for track in candidates:
-            dist2 = 0.0
-            for f in feature_fields:
-                v = getattr(track, f) or 0.0
-                diff = v - base_feats[f]
-                dist2 += diff * diff
-            distance = math.sqrt(dist2)
-            scored.append((distance, track))
+            dist2 = sum(
+                ((getattr(track, f) or 0.0) - base_feats[f])**2
+                for f in feature_fields
+            )
+            scored.append((math.sqrt(dist2), track))
 
-        # 7. trier et ne garder que les 5 plus proches
+        # 6) Tri et sélection des 5 plus proches
         scored.sort(key=lambda x: x[0])
         top5 = [t for _, t in scored[:5]]
 
-        # 8. sérialiser et renvoyer
+        # 7) Sérialisation & réponse
         serializer = self.get_serializer(top5, many=True)
         return Response(serializer.data)

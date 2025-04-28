@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from apps.musique.models import Country, MusicTrack
+from apps.music.models import Country, MusicTrack
 from tqdm import tqdm  # Import de tqdm pour la barre de progression
 
 class Command(BaseCommand):

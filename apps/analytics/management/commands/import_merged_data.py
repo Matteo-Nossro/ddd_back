@@ -2,7 +2,7 @@ import csv
 import os
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from apps.analyse.models import MergedDataRecord
+from apps.analytics.models import MergedDataRecord
 import pycountry
 
 def get_country_iso(country_name):
@@ -18,7 +18,7 @@ def get_country_iso(country_name):
         return None
 
 class Command(BaseCommand):
-    help = "Importe les données depuis merged_data.csv dans l'app analyse."
+    help = "Importe les données depuis merged_data.csv dans l'app analytics."
 
     def handle(self, *args, **kwargs):
         # Construction du chemin relatif vers le fichier CSV
