@@ -1,8 +1,9 @@
 ## Lancement du backend / frontend
 
 ### Backend Django
-1. Télécharger le fichier `db.sqlite3` ici : [Télécharger la base de données](https://www.swisstransfer.com/d/52c4f464-597d-40cb-8134-e6e36832e5d3).
-2. Déplacer `db.sqlite3` à la **racine du projet** (au même niveau que `manage.py` et `README.md`).
+1. Cloner ce repo
+2. Télécharger le fichier `db.sqlite3` ici : [Télécharger la base de données](https://www.swisstransfer.com/d/52c4f464-597d-40cb-8134-e6e36832e5d3).
+3. Déplacer `db.sqlite3` à la **racine du projet** (au même niveau que `manage.py` et `README.md`).
 
 Ensuite, lancer le backend :
 ```bash
